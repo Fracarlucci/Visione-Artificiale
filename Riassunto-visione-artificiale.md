@@ -45,8 +45,8 @@ Raggruppano spazialmente i colori percepiti come simili dall'uomo.
 
 Non sono adatti ad una descrizione quantitativa dei colori.
 
-<img src="./Risposte_res/HSV.png" width="250">
-<img src="./Risposte_res/HSL.png" width="250">
+<img src="./Riassunto_res/HSV.png" width="250">
+<img src="./Riassunto_res/HSL.png" width="250">
 
 ## Istogramma
 ---
@@ -104,6 +104,27 @@ Si possono combinare più trasformazioni affini moltiplicando fra loro le corris
 
 A differenza delle trasformazioni proiettive preserva il parallelismo fra rette.
 
-# Calibrazione
+# Calibrazione Telecamera
 
-## something
+## Parametri estrinseci
+---
+Poichè il sistema della camera non è lo stesso della scena 3D, è necessario trasformare le coordinate 3D della scena in coordinate 2D della camera.
+
+Per farlo si utilizzano i parametri estrinseci:
+- Una matrice di rotazione $R$ (ottenuta a partire da tre angoli)
+- Un vettore di traslazione $t$ (tre componenti)
+
+## Parametri intrinseci
+---
+Per determinare la trasformazione dalla scena 3D all'immagine è necessario conoscere i parametri intriseci della camera:
+- Lunghezza focale $f$
+- Centro dell'immagine $(c_x, c_y)$
+- La relazione tra la dimensione dei pixel e l'unità di misura fisica $(s_x, s_y)$ (quanto misura un pixel)
+
+## Calibrazione
+---
+La calibrazione consiste nel determinare i parametri intrinseci ed estrinseci della camera.
+
+Conoscendo un certo numero di corrispondenze tra punti 3D della scena e punti 2D dell'immagine è possibile calcolare i parametri estrinseci e intrinseci.
+
+Di solito si utilizza una scacchiera per calibrare la camera poichè è semplice individuare al suo interno un insieme di punti noti.
