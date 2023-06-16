@@ -8,10 +8,8 @@ date: 08/06/2023
 
 ## Indice
 
-- [Visione Artificiale](#visione-artificialei)
-      - [Indice](#indice)
 - [Visione Artificiale](#visione-artificiale)
-  - [Indice- Visione Artificiale](#indice--visione-artificiale)
+  - [Indice](#indice)
 - [Immagini](#immagini)
   - [RGB](#rgb)
   - [HSV/HSL](#hsvhsl)
@@ -51,7 +49,16 @@ date: 08/06/2023
     - [Elemento strutturante](#elemento-strutturante)
     - [Operazioni morfologiche](#operazioni-morfologiche)
 - [Movimento nei video](#movimento-nei-video)
-
+  - [Modello del background](#modello-del-background)
+  - [Tracking di oggetti](#tracking-di-oggetti)
+    - [Mean-shift](#mean-shift)
+- [Riconoscimento di oggetti](#riconoscimento-di-oggetti)
+  - [Confronto diretto](#confronto-diretto)
+  - [Template matching](#template-matching)
+  - [Estrazione caratteristiche](#estrazione-caratteristiche)
+  - [Machine learning](#machine-learning)
+  - [Deep learning](#deep-learning)
+    - [Convolutional neural Network (CNN)](#convolutional-neural-network-cnn)
 
 # Immagini
 
@@ -438,3 +445,50 @@ Si può applicare al tracking di un oggetto:
 
 La mappa di confidenza può essere ottenuta analizzando alcune caratteristiche dell'oggetto come il colore o la luminosità in grayscale.
 
+# Riconoscimento di oggetti
+
+## Confronto diretto
+---
+Il confronto diretto tra immagini, ovvero pixel-a-pixel, non è efficace per le seguenti ragioni:
+
+- Differenze di traslazione, rotazione, scala, prospettiva e illuminazione
+- Deformazione e variabilità degli oggetti
+- Presenza di rumore nelle immagini
+
+## Template matching
+---
+Nel template matching si definisce un pattern modello (template), cioè una piccola immagine che viene cercata all'interno dell'immagine misurandone il grado di somiglianza (matching) in tutte le possibili posizioni.
+
+Le tecniche di misura della somiglianza si basano sul confronto di:
+
+- Pixel
+- Bordi
+- Orientazione del gradiente
+
+Alcuni esempi pratici sono:
+
+- Somma delle differenze al quadrato
+- Correlazione
+- Coefficiente di correlazione
+
+Tutte e tre contemplano anche la versione normalizzata.
+
+## Estrazione caratteristiche
+---
+Per ridurre la quantità di informazioni di un'immagine si possono rappresentare le parti più rilevanti sotto forma di vettori numerici, che vengono poi utilizzati per riconoscere gli oggetti nelle immagini. 
+
+## Machine learning
+---
+Un sistema di machine learning durante la fase di training apprende a partire da degli esempi.
+
+Poi nella fase di inference è in grado di gestire anche nuovi dati dello stesso dominio applicativo.
+
+## Deep learning
+---
+Il deep learning è una tipologia di machine learning in cui la scelta delle feature e la classificazione vengono apprese direttamente dagli esempi.
+
+### Convolutional neural Network (CNN)
+---
+Reti neurali specializzate per immagini e video in cui per ciascuna immagine vengono applicati filtri il cui output viene utilizzato come input per il livello seguente.
+
+Utilizzano connessioni locali e condivisione dei pesi per ridurre il numero di parametri.
