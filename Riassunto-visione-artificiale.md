@@ -407,4 +407,34 @@ grande dei buchi da chiudere.
 
 # Movimento nei video
 
+L'obiettivo è rilevare gli oggetti in movimento nei video.
+
+1. Innanzitutto viene costruito un modello del background a partire da un certo numero di frame iniziali
+2. In ogni nuovo frame i pixel che differiscono dal modello del background sono considerati oggetti in movimento
+3. Il modello del background viene aggiornato in base ai nuovi frame
+
+Per ottenere i pixel che differiscono tra i frame si possono considerare quelli la cui differenza di valore nei frame è maggiore di una certa soglia.
+
+## Modello del background
+---
+Il modello per i pixel del background è scelto in base al tipo di sfondo:
+
+- Quando la variabilità dei pixel è poca la media degli ultimi frame è sufficiente.
+- Quando è maggiore si utilizza una gaussiana, stimando media e varianza dei precedenti frame
+- Quando le variazioni sono periodiche la distribuzione può essere multimodale: si modella ogni pixel con una **Mixture of Gaussians (MoG)**
+
+## Tracking di oggetti
+---
+### Mean-shift
+---
+Il mean-shift è un algoritmo iterativo (si ripete) per determinare i massimi locali di una funzione di densità di probabilità a partire da un insieme di campioni.
+
+Si può applicare al tracking di un oggetto:
+
+- Sia $W$ la regione che nel frame precedente conteneva l'oggetto
+- Sia $C$ una mappa di confidenza che indica, per ogni pixel del nuovo frame, la probabilità che tale pixel appartenga all'oggetto
+- Ad ogni iterazione si calcola la media pesata di $C$ in $W$ e si sposta $W$ di conseguenza
+- Ci si ferma quando la media converge o si raggiunge il massimo numero di iterazioni.
+
+La mappa di confidenza può essere ottenuta analizzando alcune caratteristiche dell'oggetto come il colore o la luminosità in grayscale.
 
