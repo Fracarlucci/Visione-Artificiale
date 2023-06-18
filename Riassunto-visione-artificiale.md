@@ -18,13 +18,16 @@ date: 08/06/2023
   - [Binarizzazione](#binarizzazione)
   - [Trasformazioni geometriche](#trasformazioni-geometriche)
   - [Trasformazioni affini](#trasformazioni-affini)
+  - [Domande](#domande)
 - [Calibrazione Telecamera](#calibrazione-telecamera)
   - [Parametri estrinseci](#parametri-estrinseci)
   - [Parametri intrinseci](#parametri-intrinseci)
   - [Calibrazione](#calibrazione)
+  - [Domande](#domande-1)
 - [Filtri](#filtri)
   - [Filtri lineari](#filtri-lineari)
     - [Normalizzazione](#normalizzazione)
+    - [Complessità computazionale](#complessità-computazionale)
     - [Filtri separabili](#filtri-separabili)
     - [Riduzione del rumore](#riduzione-del-rumore)
     - [Sharpening](#sharpening)
@@ -37,6 +40,7 @@ date: 08/06/2023
       - [Laplacian of Gaussian (LoG)](#laplacian-of-gaussian-log)
   - [Filtri non lineari](#filtri-non-lineari)
     - [Median filter](#median-filter)
+  - [Domande](#domande-2)
 - [Analisi di immagini binarie](#analisi-di-immagini-binarie)
   - [Immagini binarie](#immagini-binarie)
     - [Topologia digitale](#topologia-digitale)
@@ -48,10 +52,12 @@ date: 08/06/2023
   - [Morfologia matematica](#morfologia-matematica)
     - [Elemento strutturante](#elemento-strutturante)
     - [Operazioni morfologiche](#operazioni-morfologiche)
+  - [Domande](#domande-3)
 - [Movimento nei video](#movimento-nei-video)
   - [Modello del background](#modello-del-background)
   - [Tracking di oggetti](#tracking-di-oggetti)
     - [Mean-shift](#mean-shift)
+  - [Domande](#domande-4)
 - [Riconoscimento di oggetti](#riconoscimento-di-oggetti)
   - [Confronto diretto](#confronto-diretto)
   - [Template matching](#template-matching)
@@ -59,6 +65,7 @@ date: 08/06/2023
   - [Machine learning](#machine-learning)
   - [Deep learning](#deep-learning)
     - [Convolutional neural Network (CNN)](#convolutional-neural-network-cnn)
+  - [Domande](#domande-5)
 
 # Immagini
 
@@ -67,6 +74,8 @@ date: 08/06/2023
 L'RGB è un modello di visualizzazione dei colori additivo, cioè si basa sulla somma della luminosità dei tre colori primari (rosso, verde, blu) per ottenere tutti i colori.
 
 Ogni colore rappresenta un punto in uno spazio a tre dimensioni.
+
+E' molto utilizzato in informatica perché rende semplice la rappresentazione dei colori.
 
 Non raggruppa spazialmente i colori percepiti come simili dall'uomo.
 
@@ -144,6 +153,12 @@ Si possono combinare più trasformazioni affini moltiplicando fra loro le corris
 
 A differenza delle trasformazioni proiettive preserva il parallelismo fra rette.
 
+## Domande
+---
+
+- Descrivere lo spazio colore [RGB](#rgb) e illustrarne brevemente vantaggi e svantaggi.
+- Che cos’è l’[istogramma](#istogramma) di un’immagine digitale? A cosa può servire?
+
 # Calibrazione Telecamera
 
 ## Parametri estrinseci
@@ -171,6 +186,10 @@ Conoscendo un certo numero di corrispondenze tra punti 3D della scena e punti 2D
 
 Di solito si utilizza una scacchiera per calibrare la camera poiché è semplice individuare al suo interno un insieme di punti noti.
 
+## Domande
+---
+Che cosa sono i [parametri estrinseci](#parametri-estrinseci) del “pinhole camera model”?
+
 # Filtri
 
 Un filtro $F$ è una matrice quadrata $m$ ⨉ $m$ dispari.
@@ -182,6 +201,12 @@ Un filtro lineare è un operazione locale (il valore del pixel risultato dipende
 ### Normalizzazione
 ---
 Se i coefficienti del filtro sono tutti $≥0$ e si vuole mantenere lo stesso range di valori dell'immagine di partenza si normalizza il filtro dividendo per la somma dei coefficienti.
+
+### Complessità computazionale
+---
+La complessità computazionale di un filtro lineare è $m^2$ moltiplicazioni e somme per ciascun pixel del risultato.
+
+E' possibile ridurla notevolmente, portandola a $2m$ per pixel, se il filtro è separabile.
 
 ### Filtri separabili
 ---
@@ -307,6 +332,14 @@ Il median filter è un operazione locale in cui il valore di ciascun pixel è la
 
 Può ridurre alcuni tipi di rumore preservando maggiormente i bordi rispetto ai filtri di smooth lineari.
 
+## Domande
+---
+
+- Si illustri la [complessità computazionale](#complessità-computazionale) della convoluzione di un’immagine con un filtro e si descrivano brevemente una o più tecniche per migliorare l’efficienza di tale operazione.
+- Descrivere gli [operatori di Sobel](#filtri-derivativi) e illustrarne brevemente alcune possibili applicazioni.
+- Cosa si intende per [correlazione e convoluzione](#filtri-separabili)? Quali caratteristiche hanno in comune? Quali sono le differenze?
+- Cosa si intende generalmente per [sharpening](#sharpening) nell’elaborazione delle immagini?
+
 # Analisi di immagini binarie
 
 ## Immagini binarie
@@ -391,7 +424,7 @@ Immagine binaria con dimensioni dispari utilizzata come parametro nelle operazio
 
 ### Operazioni morfologiche
 ---
-Gli operatori principali delle operazioni morfologiche sono:
+Gli operatori principali alla base delle operazioni morfologiche sono:
 
 - Dilatazione: $F⨁S=\{q|(𝑆^r)$<sub>$q$</sub>$∩F≠∅\}$
   - La nuova immagine è l’insieme dei pixel tali che, traslando in essi $S^r$, almeno uno dei suoi
@@ -411,6 +444,14 @@ grande della regione da eliminare.
   - Riempie buchi e rafforza la connessione di regioni unite debolmente
   - Si utilizza come elemento strutturante un elemento che è più
 grande dei buchi da chiudere.
+
+## Domande
+---
+
+- Come è possibile, con la [morfologia matematica](#morfologia-matematica), “riempire” piccoli “buchi” in un’immagine?
+- Definire formalmente l’operatore di apertura della morfologia matematica e illustrarne brevemente il funzionamento.
+- Definire formalmente i seguenti termini nel contesto della [topologia digitale](#topologia-digitale): vicini, percorso, componente connessa
+- Descrivere il funzionamento della [trasformata distanza](#trasformata-distanza).
 
 # Movimento nei video
 
@@ -444,6 +485,10 @@ Si può applicare al tracking di un oggetto:
 - Ci si ferma quando la media converge o si raggiunge il massimo numero di iterazioni.
 
 La mappa di confidenza può essere ottenuta analizzando alcune caratteristiche dell'oggetto come il colore o la luminosità in grayscale.
+
+## Domande
+
+- Si descriva l’algoritmo [Mean-Shift](#mean-shift).
 
 # Riconoscimento di oggetti
 
@@ -492,3 +537,8 @@ Il deep learning è una tipologia di machine learning in cui la scelta delle fea
 Reti neurali specializzate per immagini e video in cui per ciascuna immagine vengono applicati filtri il cui output viene utilizzato come input per il livello seguente.
 
 Utilizzano connessioni locali e condivisione dei pesi per ridurre il numero di parametri.
+
+## Domande
+---
+
+- In cosa consiste il [“template matching”](#template-matching)?
