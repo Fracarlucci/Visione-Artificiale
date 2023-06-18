@@ -8,9 +8,15 @@ date: 16/06/2023
 
 ## Indice
 
-- [Cheat-sheet](#cheat-sheet)
-- [2022](#20220505)
-- 
+- [Esercizi esami](#esercizi-esami)
+  - [Indice](#indice)
+  - [Cheat sheet](#cheat-sheet)
+  - [2022/05/05](#20220505)
+  - [2022/06/08](#20220608)
+  - [2022/07/13](#20220713)
+  - [2022/09/08](#20220908)
+  - [2023 Prova esame](#2023-prova-esame)
+  - [2013](#2013)
 
 ## Cheat sheet
 
@@ -80,7 +86,7 @@ img.
     Diff = np.abs(img - img1)
     ```
 
-3. Eseguire l’operazione di contrast stretching su Diff.
+> 3. Eseguire l’operazione di contrast stretching su Diff.
 
     ```python
     v_min, v_max = Diff.min(), Diff.max()
@@ -233,4 +239,46 @@ img.
     return cv.where(img_b != 0, img_g // 2, img_g).astype(cv.uint8)
     # or
     return img_g[img_d] = img_g // 2
+    ```
+
+## 2013
+
+1. Calcolare, per ogni pixel di InputImage (esclusi eventualmente quelli di bordo), le componenti x e y del gradiente mediante convoluzione con opportuni filtri.
+
+    ```python
+    InputImage = cv.GaussianBlur(img, (3,3), 0)
+    dx = cv.Sobel(InputImage, cv.CV_32F, 1, 0, scale=1/8)
+    dy = cv.Sobel(InputImage, cv.CV_32F, 0, 1, scale=1/8)
+    ```
+
+2. Calcolare, per ogni pixel di InputImage (esclusi eventualmente quelli di bordo), l’orientazione del gradiente, esprimendola come angolo in radianti in [-π,π].
+
+    ```python
+    # mod = cv.magnitude(dx, dy)
+    ang = cv.phase(dx, dy, angleInRadians=True)
+    ```
+
+3. Binarizzare InputImage utilizzando una soglia globale pari al livello medio di grigio dell’immagine.
+
+    ```python
+    img_b = cv.threshold(InputImage, np.mean(InputImage), 255, cv.THRESH_BINARY)
+    ```
+
+4. Etichettare le componenti connesse dell’immagine binarizzata, utilizzando 255 come valore di foreground.
+
+    ```python
+    n, cc, stats, centroids = cv.connectedComponentsWithStats(img_b)
+    img_b[cc] = 255
+    ```
+
+5. Individuare eventuali componenti connesse che soddisfino la seguente condizione: almeno il 15% dei pixel ha orientazione del gradiente (così come calcolata su InputImage) compresa nell’intervallo (-π/4,π/4).
+
+    ```python
+
+    ```
+
+6. Restituire come output un’immagine grayscale (Result) in cui i pixel appartenenti alle componenti connesse individuate al passo precedente corrispondono a quelli di InputImage, mentre tutti gli altri pixel hanno valore zero.
+
+    ```python
+    return np.where(cv.isin(img_c, InputImage), InputImage, 0).astype(np.uint8)
     ```
