@@ -18,6 +18,7 @@ date: 08/06/2023
   - [Binarizzazione](#binarizzazione)
   - [Trasformazioni geometriche](#trasformazioni-geometriche)
   - [Trasformazioni affini](#trasformazioni-affini)
+  - [Problemi delle trasformazioni](#problemi-delle-trasformazioni)
   - [Domande](#domande)
 - [Calibrazione Telecamera](#calibrazione-telecamera)
   - [Parametri estrinseci](#parametri-estrinseci)
@@ -114,7 +115,11 @@ La lookup table è utilizzata se il numero di colori nell'immagine è inferiore 
 
 E' un array in cui si mappano i valori di output per ogni input.
 
-Viene utilizzata per convertire immagini grayscale in RGB, binarizzazione, equalizzazione di un istogramma.
+Viene utilizzata per:
+
+- Convertire immagini grayscale in RGB
+- Binarizzazione
+- Equalizzazione di un istogramma.
 
 ## Binarizzazione
 ---
@@ -130,6 +135,19 @@ Le trasformazioni geometriche sono trasformazioni che si applicano alle coordina
 
 Con il mapping diretto si va a mappare ogni pixel della vecchia immagine nella nuova immagine.
 
+Il mapping inverso è una trasformazione che parte dalla destinazione e ritorna alla sorgente.
+
+## Trasformazioni affini
+---
+Una trasformazione affine può essere rappresentata come moltiplicazione per una matrice (fattore di scala + rotazione) e somma di un vettore (traslazione).
+
+Si possono combinare più trasformazioni affini moltiplicando fra loro le corrispondenti matrici.
+
+A differenza delle trasformazioni proiettive preserva il parallelismo fra rette.
+
+## Problemi delle trasformazioni
+---
+
 Problemi e relative soluzioni:
 
 - Valore dei pixel fuori dalla nuova immagine
@@ -143,21 +161,15 @@ Problemi e relative soluzioni:
   - L'interpolazione, invece, applicando una funzione ai pixel in un intorno, stima il valore del pixel
 - Buchi nella nuova immagine
 
-Il mapping inverso è una trasformazione che parte dalla destinazione e ritorna alla sorgente.
-
-## Trasformazioni affini
----
-Una trasformazione affine può essere rappresentata come moltiplicazione per una matrice (fattore di scala + rotazione) e somma di un vettore (traslazione).
-
-Si possono combinare più trasformazioni affini moltiplicando fra loro le corrispondenti matrici.
-
-A differenza delle trasformazioni proiettive preserva il parallelismo fra rette.
-
 ## Domande
 ---
 
 - Descrivere lo spazio colore [RGB](#rgb) e illustrarne brevemente vantaggi e svantaggi.
 - Che cos’è l’[istogramma](#istogramma) di un’immagine digitale? A cosa può servire?
+- Cosa si intende per [Look Up Table (LUT)](#lookup-table-lut)? A cosa può servire?
+- Quali problemi presenta l’applicazione di una [trasformazione affine](#trasformazioni-affini) a un’immagine tramite mapping diretto? Come è possibile risolverli?
+- Che cosa si intende per segmentazione degli oggetti dal background? In quali casi è un’[operazione semplice](#istogramma)? In quali casi può essere [molto complicata](#binarizzazione)? [Componenti connesse](#componenti-connesse)
+- Descrivere gli spazi colore [HSL/HSV](#hsvhsl) e illustrarne brevemente vantaggi e svantaggi.
 
 # Calibrazione Telecamera
 
@@ -339,6 +351,8 @@ Può ridurre alcuni tipi di rumore preservando maggiormente i bordi rispetto ai 
 - Descrivere gli [operatori di Sobel](#filtri-derivativi) e illustrarne brevemente alcune possibili applicazioni.
 - Cosa si intende per [correlazione e convoluzione](#filtri-separabili)? Quali caratteristiche hanno in comune? Quali sono le differenze?
 - Cosa si intende generalmente per [sharpening](#sharpening) nell’elaborazione delle immagini?
+- Descrivere sinteticamente il metodo [“Canny edge detector”](#canny-edge-detector).
+- Descrivere cosa si intende con “convoluzione di un’immagine con un [filtro digitale](#filtri-lineari)”.
 
 # Analisi di immagini binarie
 
@@ -449,9 +463,11 @@ grande dei buchi da chiudere.
 ---
 
 - Come è possibile, con la [morfologia matematica](#morfologia-matematica), “riempire” piccoli “buchi” in un’immagine?
-- Definire formalmente l’operatore di apertura della morfologia matematica e illustrarne brevemente il funzionamento.
+- Definire formalmente l’operatore di [apertura](#morfologia-matematica) della morfologia matematica e illustrarne brevemente il funzionamento.
 - Definire formalmente i seguenti termini nel contesto della [topologia digitale](#topologia-digitale): vicini, percorso, componente connessa
 - Descrivere il funzionamento della [trasformata distanza](#trasformata-distanza).
+- Descrivere il funzionamento dell’algoritmo di [etichettatura delle componenti connesse](#etichettatura-delle-componenti-connesse).
+- Definire formalmente i due operatori di base della [morfologia matematica](#morfologia-matematica) e illustrarne brevemente il funzionamento.
 
 # Movimento nei video
 
@@ -542,3 +558,4 @@ Utilizzano connessioni locali e condivisione dei pesi per ridurre il numero di p
 ---
 
 - In cosa consiste il [“template matching”](#template-matching)?
+- Perché il [confronto “pixel-a-pixel”](#confronto-diretto) generalmente non è efficace in applicazioni reali di ricerca di un oggetto all’interno di un’immagine?
