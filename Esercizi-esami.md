@@ -16,10 +16,15 @@ date: 16/06/2023
   - [2022/07/13](#20220713)
   - [2022/09/08](#20220908)
   - [2023 Prova esame](#2023-prova-esame)
-  - [2013](#2013)
+  - [2013/01/15](#20130115)
+  - [2013/06/26](#20130626)
+  - [2013/09/17](#20130917)
+  - [2014/01/29](#20140129)
 
 ## Cheat sheet
 
+- `np.argmax(a, axis)` -> Returns the indices of the maximum values along an axis.
+- `axis = 1` -> righe
 - `np.where(condition, x, y)` -> Return elements chosen from x if the condition is satisfied, y otherwise. Folowed by: `.np.astype(uint8)`
 - `np.argwhere(array)` -> Find the indices of array elements that are non-zero, grouped by element.
 - `np.isin(element, test_elements)` -> Returns a boolean array of the same shape as element that is True where an element of element is in test_elements and False otherwise.
@@ -88,11 +93,11 @@ img.
 
 > 3. Eseguire l’operazione di contrast stretching su Diff.
 
-    ```python
-    v_min, v_max = Diff.min(), Diff.max()
-    if (v_max > v_min):
-        img3 = (255 * (Diff.astype(float) - v_min)/(v_max - v_min)).astype(np.uint8)
-    ```
+```python
+v_min, v_max = Diff.min(), Diff.max()
+if v_max > v_min:
+    img3 = (255 * (Diff.astype(float) - v_min)/(v_max - v_min)).astype(np.uint8)
+```
 
 4. Binarizzare Diff utilizzando come soglia globale il valore 128.
 
@@ -103,20 +108,13 @@ img.
 5. Etichettare le componenti connesse del risultato ottenuto al passo precedente; eliminare quindi le componenti connesse con area inferiore a 15 pixel.
 
     ```python
-    n, cc, stats, centroids = cv.connectedComponentsWithStats(img4)
-    for i in range(n):
-        area = stats[i, cv.CC_STAT_AREA]
-        if area < 15:
-            img4[area] = 0
+        toRemove = np.argwhere(stats[:, cv.CC_STAT_AREA] < 15)
     ```
 
 6. Restituire come output un’immagine grayscale in cui i pixel appartenenti alle componenti connesse rimanenti dopo il passo precedente hanno valore 255, mentre tutti gli altri 0.
 
     ```python
-    return np.where(img4 != 0, 255, 0).astype(uint8)
-    # or
-    toRemove = np.argwhere(stats[:, cv.CC_STAT_AREA] < 15)
-    return np.where(np.isin(cc, toRemove), 0, bin_img).astype(uint8)
+    return np.where(np.isin(cc, toRemove), 0, 255).astype(uint8)
     ```
 
 ## 2022/07/13
@@ -241,7 +239,7 @@ img.
     return img_g[img_d] = img_g // 2
     ```
 
-## 2013
+## 2013/01/15
 
 1. Calcolare, per ogni pixel di InputImage (esclusi eventualmente quelli di bordo), le componenti x e y del gradiente mediante convoluzione con opportuni filtri.
 
@@ -282,3 +280,123 @@ img.
     ```python
     return np.where(cv.isin(img_c, InputImage), InputImage, 0).astype(np.uint8)
     ```
+
+## 2013/06/26
+
+1. Calcolare, per ogni pixel dell’immagine, la media dei pixel in un intorno 51x51, considerando eventuali pixel fuori dal bordo come aventi livello di grigio pari a zero.
+
+    ```python
+    img1 = cv.boxFilter(img, -1, (51,51))
+    ```
+
+2. Calcolare l’immagine Diff in cui ciascun pixel è il valore assoluto della differenza fra il pixel corrispondente nell’immagine originale e il valore medio determinato al passo precedente.
+
+    ```python
+    Diff = np.abs(img - img1)
+    ```
+
+3. Eseguire l’operazione di contrast stretching su Diff.
+
+    ```python
+    v_max, v_min = Diff.max(), Diff.min()
+    if v_max > v_min:
+        str = (255 * (Diff.astype(float) - v_min)/(v_max - v_min)).astype(np.uint8)
+    ```
+
+4. Binarizzare Diff utilizzando come soglia globale il valore 128.
+
+    ```python
+    img4 = cv.treshold(Diff, 128, 255, cv.THRESH_BINARY)
+    ```
+
+5. Etichettare le componenti connesse del risultato ottenuto al passo precedente usando la metrica D4; eliminare poi le componenti connesse con un perimetro superiore a 25 pixel.
+
+    ```python
+    n, cc, stats, centroids = cv.connectedComponentsWithStats(img4)
+    toRemove = cv.argmax(stats[:, cv.STATS_AREA])
+    img5 = cv.where(cv.isin(cc, toRemove), 0, 255).astype(np.uint8)
+    ```
+
+6. Restituire come output un’immagine grayscale (Result) in cui i pixel appartenenti alle componenti connesse individuate al passo precedente hanno valore 255, mentre tutti gli altri pixel hanno valore 0.
+
+    ```python
+    return img5
+    ```
+
+## 2013/09/17
+
+1. Binarizzare InputImage utilizzando come soglia la media dei livelli di grigio dei pixel nell’immagine stessa che sono massimi locali di luminosità (considerando semplicemente l’intorno di 8 pixel di ciascuno). Qualora nessun pixel soddisfacesse tale proprietà, utilizzare il valore 128 come soglia.
+
+    ```python
+    if cv.boxFilter(img, -1, (8,8)) is not None
+        img1 = cv.treshold(img, , 255, cv.TRESH_BINARY)
+    ```
+
+2. Eseguire, sul risultato del passo precedente, un’operazione morfologica di apertura con un quadrato di lato 7 pixel come elemento strutturante: sia C il risultato.
+
+    ```python
+    st_elem = cv.getStructuringElement(cv.MORPH_RECT, (7,7))
+    img2 = cv.morphologyEx(img1, cv.MORPH_DILATE, st_elem)
+    ```
+
+3. Estrarre i bordi di C utilizzando la morfologia matematica e un cerchio di diametro 3 pixel come elemento strutturante.
+
+    ```python
+    st_elem = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3,3))
+    img3 = cv.morphologyEx(img1, cv.MORPH_ERODE, st_elem)
+    ```
+
+4. Determinare tutti i pixel di foreground di C con distanza maggiore di 9 pixel (secondo la metrica d8) dal background (valore 0).
+
+    ```python
+    img4 = cv.where(cv.distanceTransform(img3, cv.DIST_C, 3) > 9, 255, 0).astype(np.uint8)
+    ```
+
+5. Restituire come output un’immagine grayscale (Result) in cui i pixel di bordo determinati al passo 3 hanno luminosità pari a 255, i pixel determinati al punto 4 hanno luminosità pari a 128 e i restanti pixel hanno luminosità pari alla metà della corrispondente luminosità in InputImage.
+
+    ```python
+    img[img3], img[img4] = 255, 128
+    return ((img & (~(img3 | img4))) // 2)
+    ```
+
+## 2014/01/29
+
+1. Calcolare, per ciascuna riga dell’immagine, la somma dei valori dei pixel: sia Ym la coordinata y della riga dell’immagine con la somma maggiore (nel caso più righe soddisfino tale condizione, considerare quella con coordinata y minore).
+
+    ```python
+    Ym = np.argmax(np.sum(img, 1))
+    ```
+
+2. Binarizzare InputImage utilizzando come soglia la media dei livelli di grigio dei pixel con coordinata y maggiore o uguale a Ym.
+
+    ```python
+    img2 = cv.threshold(img, np.mean(img[Ym:,:]), 255, cv.THRESH_BINARY)
+    ```
+
+3. Eseguire, sul risultato del passo precedente, un’operazione morfologica di erosione con un cerchio di diametro 7 pixel come elemento strutturante e considerando il foreground pari a 255: sia C il risultato.
+
+    ```python
+    st_elem = cv.getStructuringElement(cv.MORPH_ELLIPSE, (7,7))
+    C = cv.morphologyEx(img1, cv.MORPH_ERODE, st_elem)
+    ```
+
+4. Estrarre i bordi di C utilizzando la morfologia matematica e un cerchio di diametro 3 pixel come elemento strutturante.
+
+    ```python
+    st_elem = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3,3))
+    C = cv.morphologyEx(img1, cv.MORPH_DILATE, st_elem)
+    ```
+
+5. Determinare tutti i pixel di background di C con distanza minore di 9 pixel (secondo la metrica d8) dal foreground (valore 255).
+
+    ```python
+    img5 = cv.where(cv.distanceTransform(255-C, cv.DIST_C, 3) < 9, 255, 0).astype(np.uint8)
+    ```
+
+6. Restituire come output un’immagine di int (Result) in cui i pixel di bordo individuati al passo 4 hanno valore pari a -1, i pixel individuati al punto 5 hanno valore pari a 0 e i restanti pixel hanno valore pari al quadrato della corrispondente luminosità in img.
+
+    ```python
+    img[C], img[img5] = -1, 0
+    return ((img & (~(C | img5)))^2)
+    ```
+
