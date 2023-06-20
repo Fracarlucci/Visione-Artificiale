@@ -20,6 +20,7 @@ date: 16/06/2023
   - [2013/06/26](#20130626)
   - [2013/09/17](#20130917)
   - [2014/01/29](#20140129)
+  - [2017/06/13](#20170613)
 
 ## Cheat sheet
 
@@ -178,14 +179,14 @@ if v_max > v_min:
 
     ```python
     img_d = img_g1.astype(np.int16) - img_g2
-    img_d = np.where(img_g1 >= 0, img_g1, 0).astype(np.uint8)
+    img_d = np.where(img_d >= 0, img_d, 0).astype(np.uint8)
     img_d = normalize(img_d, None, 0, 255, cv.NORM_MINMAX)
     ```
 
 4. Eseguire l’algoritmo di Canny, senza effettuare il primo passo (smooth Gaussiano), ma partendo direttamente dall’immagine img_g2; come soglie per l’isteresi utilizzare 30 e 70.
 
     ```python
-    img_c = Canny(img_g2, 30, 70)
+    img_c = cv.Canny(img_g2, 30, 70)
     ```
 
 5. Restituire un’immagine a colori in cui, per ciascun pixel, la componente blu è il valore corrispondente in gray_img, la componente verde è il valore corrispondente ottenuto con l’algoritmo di Canny e la componente rossa è il valore corrispondente in img_d.
@@ -336,7 +337,7 @@ if v_max > v_min:
 
     ```python
     st_elem = cv.getStructuringElement(cv.MORPH_RECT, (7,7))
-    img2 = cv.morphologyEx(img1, cv.MORPH_DILATE, st_elem)
+    img2 = cv.morphologyEx(img1, cv.MORPH_OPEN, st_elem)
     ```
 
 3. Estrarre i bordi di C utilizzando la morfologia matematica e un cerchio di diametro 3 pixel come elemento strutturante.
@@ -398,5 +399,42 @@ if v_max > v_min:
     ```python
     img[C], img[img5] = -1, 0
     return ((img & (~(C | img5)))^2)
+    ```
+
+## 2017/06/13
+
+1. Binarizzare InputImage utilizzando come soglia la media dei livelli di grigio dei pixel nell’immagine stessa che sono minimi locali di luminosità (considerando semplicemente l’intorno di 8 pixel di ciascuno). Qualora nessun pixel soddisfacesse tale proprietà, utilizzare il valore 32 come soglia.
+
+    ```python
+    img1 = cv.treshold(InputImage, np.mean(), 255, cv.THRESH_BINARY)
+    ```
+
+2. Eseguire, sul risultato del passo precedente, un’operazione morfologica di apertura con un cerchio di diametro 3 pixel come elemento strutturante: sia A il risultato.
+
+    ```python
+    st_elem = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3,3))
+    A = cv.morphologyEx(img1, cv.MORPH_OPEN, st_elem)
+    ```
+
+3. Eseguire, sul risultato del passo 2, un’operazione morfologica di chiusura con un cerchio di diametro 5 pixel come elemento strutturante: sia C il risultato.
+
+    ```python
+    st_elem = cv.getStructuringElement(cv.MORPH_ELLIPSE, (5,5))
+    C = cv.morphologyEx(img1, cv.MORPH_CLOSE, st_elem)
+    ```
+
+4. Determinare l’intersezione fra tutti i pixel di foreground di A con distanza maggiore di 2 pixel (secondo la metrica d8) dal background e tutti i pixel di foreground di C con distanza maggiore di 5 pixel (sempre secondo d8) dal background.
+
+    ```python
+    imgA = cv.where(cv.distanceTransform(A, cv.DIST_C, 3) > 2, 255, 0).astype(np.uint8)
+    imgC = cv.where(cv.distanceTransform(C, cv.DIST_C, 3) > 5, 255, 0).astype(np.uint8)
+    img4 = np.where(imgA | imgC, 255, 0).astype(np.uint8)
+    ```
+
+5. Restituire come output un’immagine grayscale (Result) in cui i pixel determinati al punto 4 hanno luminosità pari a 128 e i restanti pixel hanno luminosità pari a un quarto della corrispondente luminosità in InputImage.
+
+    ```python
+    InputImage[img4] = 128
+    return (InputImage & (~(img4)) // 4)
     ```
 

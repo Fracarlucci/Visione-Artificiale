@@ -18,7 +18,7 @@ date: 08/06/2023
   - [Binarizzazione](#binarizzazione)
   - [Trasformazioni geometriche](#trasformazioni-geometriche)
   - [Trasformazioni affini](#trasformazioni-affini)
-  - [Problemi delle trasformazioni](#problemi-delle-trasformazioni)
+  - [Problemi delle trasformazioni \*](#problemi-delle-trasformazioni-)
   - [Domande](#domande)
 - [Calibrazione Telecamera](#calibrazione-telecamera)
   - [Parametri estrinseci](#parametri-estrinseci)
@@ -145,7 +145,7 @@ Si possono combinare più trasformazioni affini moltiplicando fra loro le corris
 
 A differenza delle trasformazioni proiettive preserva il parallelismo fra rette.
 
-## Problemi delle trasformazioni
+## Problemi delle trasformazioni *
 ---
 
 Problemi e relative soluzioni:
@@ -158,7 +158,7 @@ Problemi e relative soluzioni:
   - Lascia il valore già presente nell'immagine destinazione
 - Valore dei pixel nelle coordinate non intere
   - Il metodo più semplice è scegliere il valore del pixel più vicino
-  - L'interpolazione, invece, applicando una funzione ai pixel in un intorno, stima il valore del pixel
+  - L'interpolazione, invece, stima il valore del pixel applicando una funzione ai pixel in un intorno 
 - Buchi nella nuova immagine
 
 ## Domande
@@ -208,7 +208,7 @@ Un filtro $F$ è una matrice quadrata $m$ ⨉ $m$ dispari.
 
 ## Filtri lineari
 ---
-Un filtro lineare è un operazione locale (il valore del pixel risultato dipende da un intorno del pixel di partenza) in cui il valore di un pixel è calcolato come somma pesata dei valori dei pixel di un intorno del pixel di partenza.
+Un filtro lineare è un **operazione locale** (il valore del pixel risultato dipende da un intorno del pixel di partenza) in cui il valore di un pixel è calcolato come somma pesata dei valori dei pixel di un intorno del pixel di partenza.
 
 ### Normalizzazione
 ---
@@ -276,7 +276,7 @@ Per la proprietà distributiva della [convoluzione](#convoluzione) il filtro DoG
 
 ### Filtri derivativi
 ---
-Facendo le derivate parziali sugli assi $x$ e $y$ si ottengono le alte frequenze nell'immagine, ma poiché sono influenzate dal rumore dell'immagine si applica prima un filtro di smooth.
+Facendo le derivate parziali sugli assi $x$ e $y$ si ottengono le **alte frequenze** nell'immagine, ma poiché sono influenzate dal rumore dell'immagine si applica prima un filtro di smooth.
 
 I principali filtri derivativi $3$⨉$3$ (in ordine decrescente di errori) sono: 
 
@@ -467,7 +467,7 @@ grande dei buchi da chiudere.
 - Definire formalmente i seguenti termini nel contesto della [topologia digitale](#topologia-digitale): vicini, percorso, componente connessa
 - Descrivere il funzionamento della [trasformata distanza](#trasformata-distanza).
 - Descrivere il funzionamento dell’algoritmo di [etichettatura delle componenti connesse](#etichettatura-delle-componenti-connesse).
-- Definire formalmente i due operatori di base della [morfologia matematica](#morfologia-matematica) e illustrarne brevemente il funzionamento.
+- Definire formalmente i due operatori di base della [morfologia matematica](#operazioni-morfologiche) e illustrarne brevemente il funzionamento.
 
 # Movimento nei video
 
